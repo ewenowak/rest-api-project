@@ -47,7 +47,7 @@ router.route('/seats').post((req, res) => {
 router.route('/seats/:id').put((req, res) => {
   const { day, seat, client, email } = req.body;
   const updatedSeat = seats.find(seat => seat.id == req.params.id);
-  if (newSeat) {
+  if (seat) {
     updatedSeat.day = day;
     updatedSeat.seat = seat;
     updatedSeat.client = client;
