@@ -19,10 +19,11 @@
     "uuid": "8.3.2"
   },
   "scripts": {
-    "start": "nodemon"
+    "start": "nodemon",
+    "build": "cd client && yarn install && yarn build"
   },
   "name": "rest-api-project",
   "version": "1.0.0",
-  "main": "index.js",
+  "main": "server.js",
   "license": "MIT"
 }
