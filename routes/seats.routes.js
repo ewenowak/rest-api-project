@@ -3,68 +3,68 @@ const { v4: uuidv4 } = require('uuid');
 const router = express.Router();
 const db = require('../db.js');
 
-const concerts = db.concerts;
+const seats =  db.seats;
 
-router.route('/concerts').get((req, res) => {
-	res.send(concerts);
+router.route('/seats').get((req, res) => {
+  res.send(seats);
 });
 
-router.route('/concerts/:id').get((req, res) => {
-	const currentUser = concerts.find(user => user.id == req.params.id);
-	if (currentUser) {
-		res.send(currentUser);
-	} else if (req.params.id === 'random') {
-		const item = concerts[Math.floor(Math.random() * concerts.length)];
-		res.send(item);
-	} else {
-		res.send(`<h3>No user with id = ${req.params.id}</h3>`);
-	}
+router.route('/seats/:id').get((req, res) => {
+  const currentUser = seats.find(user => user.id == req.params.id);
+  if (currentUser) {
+    res.send(currentUser);
+  } 
+  else if (req.params.id === 'random') {
+    const item = seats[Math.floor(Math.random()*seats.length)];
+    res.send(item);
+  } else { 
+    res.send(`<h3>No user with id = ${req.params.id}</h3>`) 
+  }
 });
 
-router.route('/concerts').post((req, res) => {
-	const { performer, genre, price, day, image } = req.body;
-	if (performer && genre && price && day && image) {
-		const newConcert = {
-			id: uuidv4(),
-			performer: performer,
-			genre: genre,
-			price: price,
-			day: day,
-			image: image,
-		};
-		concerts.push(newConcert);
-		res.send({ message: 'OK' });
-	} else {
-		res.send({ message: 'ERROR' });
-	}
+router.route('/seats').post((req, res) => {
+  const { day, seat, client, email } = req.body;
+  if(day && seat && client && email ) {
+    const newSeat = {
+      id: uuidv4(),
+      day: day,
+      seat: seat,
+      client: client,
+      email: email
+    }
+    seats.push(newSeat);
+    res.send({ message: 'OK' })
+  }
+  else {
+    res.send({ message: 'ERROR' });
+  }
 });
 
-router.route('/concerts/:id').put((req, res) => {
-	const { performer, genre, price, day, image } = req.body;
-	const concert = concerts.find(concert => concert.id == req.params.id);
-	if (concert) {
-		concert.performer = performer;
-		concert.genre = genre;
-		concert.price = price;
-		concert.day = day;
-		concert.image = image;
-		res.send({ message: 'OK' });
-	} else {
-		res.send({ message: 'ERROR' });
-	}
+router.route('/seats/:id').put((req, res) => {
+  const { day, seat, client, email } = req.body;
+  const updatedSeat = seats.find(seat => seat.id == req.params.id);
+  if (newSeat) {
+    updatedSeat.day = day;
+    updatedSeat.seat = seat;
+    updatedSeat.client = client;
+    updatedSeat.email = email;
+    res.send({ message: 'OK' });
+  } else {
+    res.send({ message: 'ERROR' });
+  }
 });
 
-router.route('/concerts/:id').delete((req, res) => {
-	const concert = concerts.find(concert => concert.id == req.params.id);
-	if (concert) {
-		const props = Object.getOwnPropertyNames(concert);
-		for (let i = 0; i < props.length; i++) {
-			delete concert[props[i]];
-		}
-		res.send({ message: 'OK' });
-	} else {
-		res.send({ message: 'ERROR' });
-	}
+router.route('/seats/:id').delete((req, res) => {
+  const seat = seats.find(seat => seat.id == req.params.id);
+  if (seat) {
+    const props = Object.getOwnPropertyNames(seat);
+    for (let i = 0; i < props.length; i++) {
+      delete seat[props[i]];
+    }
+    res.send({ message: 'OK' });
+  } else {
+    res.send({ message: 'ERROR' });
+  }
 });
 
-module.exports = router;
+module.exports = router; 
