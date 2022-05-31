@@ -1,64 +1,52 @@
 const express = require('express');
-const { v4: uuidv4 } = require('uuid');
 const router = express.Router();
-const db = require('../db.js');
-
-const testimonials = db.testimonials;
+const { v4: uuidv4 } = require('uuid');
+const db = require('../db');
 
 router.route('/testimonials').get((req, res) => {
-	res.send(testimonials);
+	res.json(db.testimonials);
 });
 
 router.route('/testimonials/:id').get((req, res) => {
-	const currentUser = testimonials.find(user => user.id == req.params.id);
-	if (currentUser) {
-		res.send(currentUser);
-	} else if (req.params.id === 'random') {
-		const item = testimonials[Math.floor(Math.random() * testimonials.length)];
-		res.send(item);
-	} else {
-		res.send(`<h3>No user with id = ${req.params.id}</h3>`);
-	}
+	res.json(db.testimonials.filter(item => item.id == req.params.id));
+});
+
+router.route('/testimonials/random').get((req, res) => {
+	let item = db.testimonials[Math.floor(Math.random() * db.length)];
+	res.json(item);
 });
 
 router.route('/testimonials').post((req, res) => {
-	const { author, text } = req.body;
-	if (author && text) {
-		const newUser = {
-			id: uuidv4(),
-			author: author,
-			text: text,
-		};
-		testimonials.push(newUser);
-		res.send({ message: 'OK' });
-	} else {
-		res.send({ message: 'ERROR' });
-	}
+	const newData = {
+		id: uuidv4(),
+		author: req.body.author,
+		text: req.body.text,
+	};
+	db.testimonials.push(newData);
+	return res.json({ message: 'OK' });
 });
 
 router.route('/testimonials/:id').put((req, res) => {
-	const { author, text } = req.body;
-	const user = testimonials.find(user => user.id == req.params.id);
-	if (user) {
-		user.author = author;
-		user.text = text;
-		res.send({ message: 'OK' });
-	} else {
-		res.send({ message: 'ERROR' });
-	}
+	const editedTestimonials = db.testimonials.filter(
+		item => item.id == req.params.id
+	);
+	const indexOfTestimonial = db.testimonials.indexOf(editedTestimonials);
+	const newTestimonials = {
+		...editedTestimonials,
+		author: req.body.author,
+		text: req.body.text,
+	};
+	db.testimonials[indexOfTestimonial] = newTestimonials;
+	return res.json({ message: 'OK' });
 });
 
 router.route('/testimonials/:id').delete((req, res) => {
-	const user = testimonials.find(user => user.id == req.params.id);
-	if (user) {
-		const props = Object.getOwnPropertyNames(user);
-		for (let i = 0; i < props.length; i++) {
-			delete user[props[i]];
-		}
-		res.send({ message: 'OK' });
-	} else {
-		res.send({ message: 'ERROR' });
-	}
+	const deletedTestimonials = db.testimonials.filter(
+		item => item.id == req.params.id
+	);
+	const indexOfTestimonial = db.testimonials.indexOf(deletedTestimonials);
+	db.testimonials.splice(indexOfTestimonial, 1);
+	return res.json({ message: 'OK' });
 });
 
 module.exports = router;
