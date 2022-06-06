@@ -1,6 +1,5 @@
 import React from 'react';
 import { Button, Progress, Alert } from 'reactstrap';
-import { addSeat } from '../../../redux/seatsRedux';
 
 import './SeatChooser.scss';
 
