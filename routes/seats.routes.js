@@ -26,7 +26,7 @@ router.route('/seats').post((req, res) => {
   const { day, seat, client, email } = req.body;
   const isTaken = seats.find(seatData => seatData.seat === seat);
   if (isTaken) { 
-   return res.send({ message: 'This seat this seat is already taken' });
+   return res.send({ message: 'This seat is already taken' });
   }
   if(seat) {
     const newSeat = {
@@ -37,6 +37,7 @@ router.route('/seats').post((req, res) => {
       email: email
     }
     seats.push(newSeat);
+    req.io.emit('seatsUpdated', seats);
     res.send({ message: 'OK' })
   }
   else {
