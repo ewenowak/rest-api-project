@@ -19,7 +19,7 @@ app.use(express.json());
 app.use(express.static(path.join(__dirname, '/client/build')));
 
 // connects our backend code with the database
-mongoose.connect('mongodb://localhost:27017/NewWaveDB', { useNewUrlParser: true });
+mongoose.connect('mongodb+srv://ewenowak:balibali@cluster0.a0lsb.mongodb.net/?retryWrites=true&w=majority', { dbName: 'NewWaveDB', useNewUrlParser: true });
 const db = mongoose.connection;
 
 db.once('open', () => {
