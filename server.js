@@ -19,13 +19,15 @@ app.use(express.json());
 app.use(express.static(path.join(__dirname, '/client/build')));
 
 // connects our backend code with the database
-mongoose.connect('mongodb+srv://ewenowak:balibali@cluster0.a0lsb.mongodb.net/?retryWrites=true&w=majority', { dbName: 'NewWaveDB', useNewUrlParser: true });
-const db = mongoose.connection;
+const NODE_ENV = process.env.NODE_ENV;
+let dbUri = '';
 
-db.once('open', () => {
-  console.log('Connected to the database');
-});
-db.on('error', err => console.log('Error ' + err));
+if(NODE_ENV === 'production') dbUri = 'url to remote db';
+else if(NODE_ENV === 'test') dbUri = 'mongodb://localhost:27017/companyDBtest';
+else dbUri = 'mongodb://localhost:27017/companyDB';
+
+mongoose.connect(dbUri, { useNewUrlParser: true, useUnifiedTopology: true });
+const db = mongoose.connection;
 
 const server = app.listen(process.env.PORT || 8000, () => {
 	console.log('Server is running on port: 8000');
@@ -53,6 +55,5 @@ app.use((req, res) => {
 
 const io = socket(server)
 
-io.on('connection', (socket) => {
-console.log('New socket!');
-});
+module.exports = server;
+
