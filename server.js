@@ -3,10 +3,12 @@ const cors = require('cors');
 const path = require('path');
 const socket = require('socket.io');
 const mongoose = require('mongoose');
+const helmet = require('helmet');
 
 const app = express();
 
 app.use(cors());
+app.use(helmet());
 
 app.use((req, res, next) => {
 	req.io = io;
@@ -22,9 +24,13 @@ app.use(express.static(path.join(__dirname, '/client/build')));
 const NODE_ENV = process.env.NODE_ENV;
 let dbUri = '';
 
-if(NODE_ENV === 'production') dbUri = 'url to remote db';
-else if(NODE_ENV === 'test') dbUri = 'mongodb://localhost:27017/companyDBtest';
-else dbUri = 'mongodb://localhost:27017/companyDB';
+const LOGIN = process.env.LOGIN;
+const KEY = process.env.KEY
+
+
+if(NODE_ENV === 'production') dbUri = `mongodb+srv://${LOGIN}:${KEY}@cluster0.a0lsb.mongodb.net/?retryWrites=true&w=majority`;
+else if(NODE_ENV === 'test') dbUri = 'mongodb://localhost:27017/newWaveDBtest';
+else dbUri = 'mongodb://localhost:27017/newWaveDB';
 
 mongoose.connect(dbUri, { useNewUrlParser: true, useUnifiedTopology: true });
 const db = mongoose.connection;
